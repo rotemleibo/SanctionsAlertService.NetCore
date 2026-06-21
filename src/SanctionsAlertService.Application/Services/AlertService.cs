@@ -10,8 +10,6 @@ namespace SanctionsAlertService.Application.Services;
 
 public sealed class AlertService(IAlertRepository repository, IAlertUnitOfWork unitOfWork) : IAlertService
 {
-    private static readonly IReadOnlyCollection<AlertEvent> NoEvents = [];
-
     public async Task<Alert> CreateAlertAsync(
         string tenantId,
         string transactionId,
@@ -28,7 +26,7 @@ public sealed class AlertService(IAlertRepository repository, IAlertUnitOfWork u
 
         var now = DateTimeOffset.UtcNow;
         var alert = Alert.Create(tenantId, transactionId, matchedEntityName, matchScore, assignedTo, now);
-        return await unitOfWork.SaveAsync(tenantId, alert, NoEvents, cancellationToken);
+        return await unitOfWork.SaveAsync(tenantId, alert, [], cancellationToken);
     }
 
     public Task<IReadOnlyCollection<Alert>> ListAlertsAsync(

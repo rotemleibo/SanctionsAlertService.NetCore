@@ -8,7 +8,7 @@ public sealed class DecisionRequest
     [Required]
     public DecisionOutcome Decision { get; init; }
 
-    [Required]
-    [RegularExpression(@".*\S.*", ErrorMessage = "DecisionNote must not be empty or whitespace.")]
+    [Required(AllowEmptyStrings = false, ErrorMessage = "DecisionNote must not be empty or whitespace.")]
     public string DecisionNote { get; init; } = string.Empty;
+    
 }
