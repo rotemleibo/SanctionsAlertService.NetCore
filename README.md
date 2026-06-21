@@ -13,9 +13,10 @@ A .NET 10 REST API for managing sanctions screening alerts. The service stores a
 
 ### Prerequisites
 
-- .NET 10 SDK
+- .NET 10 SDK (for local development)
+- Docker and Docker Compose (for containerized deployment)
 
-### Start the API
+### Option 1: Run Locally with .NET CLI
 
 From the repository root:
 
@@ -23,7 +24,27 @@ From the repository root:
 dotnet run --project src/SanctionsAlertService.Api
 ```
 
-Swagger is enabled in the Development environment.
+Swagger is enabled in the Development environment and opens automatically at:
+- `http://localhost:5251/swagger` (HTTP)
+- `https://localhost:7218/swagger` (HTTPS)
+
+### Option 2: Run with Docker Compose
+
+From the repository root:
+
+```powershell
+docker compose up --build
+```
+
+The API will be available at:
+- `http://localhost:8080`
+- Swagger UI: `http://localhost:8080/swagger`
+
+To stop the container:
+
+```powershell
+docker compose down
+```
 
 ### Run Tests
 
@@ -312,7 +333,8 @@ Even with in-memory storage, the service models reliable event publication separ
 - Distributed tracing, metrics, and health checks
 - OpenAPI examples and versioning policy
 - More end-to-end tests, concurrency tests, and load tests
-- Containerization and deployment manifests
+- Production-ready Docker image with non-root user and optimized layers
+- Kubernetes manifests or Helm charts for orchestration
 
 ## Testing
 

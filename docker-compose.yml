@@ -1,0 +1,10 @@
+services:
+  sanctionsalertservice.api:
+    build:
+      context: .
+      dockerfile: src/SanctionsAlertService.Api/Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:8080
