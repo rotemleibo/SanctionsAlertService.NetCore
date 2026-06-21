@@ -8,7 +8,7 @@ using SanctionsAlertService.Domain.ValueObjects;
 
 namespace SanctionsAlertService.Application.Services;
 
-public sealed class AlertService(IAlertRepository repository, IAlertUnitOfWork unitOfWork)
+public sealed class AlertService(IAlertRepository repository, IAlertUnitOfWork unitOfWork) : IAlertService
 {
     private static readonly IReadOnlyCollection<AlertEvent> NoEvents = [];
 

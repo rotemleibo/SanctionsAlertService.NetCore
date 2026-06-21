@@ -30,7 +30,7 @@ builder.Services.AddSingleton<IAlertRepository, InMemoryAlertRepository>();
 builder.Services.AddSingleton<IOutboxStore, InMemoryOutboxStore>();
 builder.Services.AddSingleton<IOutboxEventSerializer, OutboxEventSerializer>();
 builder.Services.AddScoped<IAlertUnitOfWork, InMemoryAlertUnitOfWork>();
-builder.Services.AddScoped<AlertService>();
+builder.Services.AddScoped<IAlertService, AlertService>();
 builder.Services.AddScoped<IAlertEventPublisher, LoggingAlertEventPublisher>();
 builder.Services.AddScoped<OutboxProcessor>();
 builder.Services.AddHostedService<OutboxDispatcherService>();

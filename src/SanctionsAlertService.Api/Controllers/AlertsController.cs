@@ -8,7 +8,7 @@ namespace SanctionsAlertService.Api.Controllers;
 
 [ApiController]
 [Route("api/v1/alerts")]
-public sealed class AlertsController(AlertService alertService, TenantContext tenantContext) : ControllerBase
+public sealed class AlertsController(IAlertService alertService, TenantContext tenantContext) : ControllerBase
 {
     [HttpPost]
     public async Task<ActionResult<AlertResponse>> Create(
@@ -69,6 +69,6 @@ public sealed class AlertsController(AlertService alertService, TenantContext te
 
     private string GetTenantId()
     {
-        return tenantContext.TenantId ?? throw new ArgumentException("Tenant id is not resolved.");
+        return tenantContext.TenantId ?? throw new InvalidOperationException("Tenant was not resolved by TenantMiddleware.");
     }
 }

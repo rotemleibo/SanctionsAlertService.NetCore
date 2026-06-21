@@ -7,13 +7,6 @@ namespace SanctionsAlertService.Infrastructure.Repositories;
 
 public sealed class InMemoryAlertRepository(InMemoryDatabase database) : IAlertRepository
 {
-    public Task<Alert> SaveAsync(string tenantId, Alert alert, CancellationToken cancellationToken = default)
-    {
-        cancellationToken.ThrowIfCancellationRequested();
-        var saved = database.SaveAlert(tenantId, alert, []);
-        return Task.FromResult(saved);
-    }
-
     public Task<Alert?> FindByIdAsync(string tenantId, Guid alertId, CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
