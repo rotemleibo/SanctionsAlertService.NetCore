@@ -7,15 +7,25 @@ namespace SanctionsAlertService.Domain.Entities;
 public sealed record Alert
 {
     public Guid Id { get; init; }
+
     public string TransactionId { get; init; } = string.Empty;
+
     public string MatchedEntityName { get; init; } = string.Empty;
+
     public int MatchScore { get; init; }
+
     public AlertStatus Status { get; init; }
+
     public string? AssignedTo { get; init; }
+
     public string TenantId { get; init; } = string.Empty;
+
     public DateTimeOffset CreatedAt { get; init; }
+
     public DateTimeOffset UpdatedAt { get; init; }
+
     public string? DecisionNote { get; init; }
+
     public long Version { get; init; }
 
     public static Alert Create(

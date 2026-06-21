@@ -22,6 +22,7 @@ public sealed class GlobalExceptionHandler(RequestDelegate next)
         {
             AlertNotFoundException => (StatusCodes.Status404NotFound, "ALERT_NOT_FOUND", ex.Message),
             DecisionAlreadyMadeException => (StatusCodes.Status409Conflict, "DECISION_ALREADY_MADE", ex.Message),
+            TransactionAlreadyExistsException => (StatusCodes.Status409Conflict, "TRANSACTION_ALREADY_EXISTS", ex.Message),
             InvalidStateTransitionException => (StatusCodes.Status409Conflict, "INVALID_STATE_TRANSITION", ex.Message),
             OptimisticLockException => (StatusCodes.Status409Conflict, "OPTIMISTIC_LOCK_CONFLICT", ex.Message),
             ArgumentOutOfRangeException => (StatusCodes.Status400BadRequest, "VALIDATION_ERROR", ex.Message),

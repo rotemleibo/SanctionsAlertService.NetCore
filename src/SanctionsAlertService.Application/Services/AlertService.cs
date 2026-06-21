@@ -1,4 +1,4 @@
-using SanctionsAlertService.Application.Events;
+using SanctionsAlertService.Application.Outbox;
 using SanctionsAlertService.Application.Repositories;
 using SanctionsAlertService.Domain.Entities;
 using SanctionsAlertService.Domain.Enums;
@@ -8,8 +8,10 @@ using SanctionsAlertService.Domain.ValueObjects;
 
 namespace SanctionsAlertService.Application.Services;
 
-public sealed class AlertService(IAlertRepository repository, IAlertEventPublisher eventPublisher)
+public sealed class AlertService(IAlertRepository repository, IAlertUnitOfWork unitOfWork)
 {
+    private static readonly IReadOnlyCollection<AlertEvent> NoEvents = [];
+
     public async Task<Alert> CreateAlertAsync(
         string tenantId,
         string transactionId,
@@ -18,9 +20,15 @@ public sealed class AlertService(IAlertRepository repository, IAlertEventPublish
         string? assignedTo,
         CancellationToken cancellationToken = default)
     {
+        var existing = await repository.FindByTransactionIdAsync(tenantId, transactionId, cancellationToken);
+        if (existing is not null)
+        {
+            throw new TransactionAlreadyExistsException(transactionId.Trim());
+        }
+
         var now = DateTimeOffset.UtcNow;
         var alert = Alert.Create(tenantId, transactionId, matchedEntityName, matchScore, assignedTo, now);
-        return await repository.SaveAsync(tenantId, alert, cancellationToken);
+        return await unitOfWork.SaveAsync(tenantId, alert, NoEvents, cancellationToken);
     }
 
     public Task<IReadOnlyCollection<Alert>> ListAlertsAsync(
@@ -47,18 +55,16 @@ public sealed class AlertService(IAlertRepository repository, IAlertEventPublish
     {
         var current = await GetByIdAsync(tenantId, alertId, cancellationToken);
         var updated = current.Escalate(DateTimeOffset.UtcNow);
-        var persisted = await repository.SaveAsync(tenantId, updated, cancellationToken);
 
         var evt = new AlertEscalated(
             EventId: Guid.NewGuid(),
-            AlertId: persisted.Id,
-            TenantId: persisted.TenantId,
+            AlertId: updated.Id,
+            TenantId: updated.TenantId,
             Outcome: AlertStatus.ESCALATED.ToString(),
             PreviousStatus: current.Status.ToString(),
             Timestamp: DateTimeOffset.UtcNow);
 
-        await TryPublishAsync(evt, cancellationToken);
-        return persisted;
+        return await unitOfWork.SaveAsync(tenantId, updated, [evt], cancellationToken);
     }
 
     public async Task<Alert> DecideAsync(
@@ -70,28 +76,14 @@ public sealed class AlertService(IAlertRepository repository, IAlertEventPublish
     {
         var current = await GetByIdAsync(tenantId, alertId, cancellationToken);
         var updated = current.Decide(new Decision(outcome, note), DateTimeOffset.UtcNow);
-        var persisted = await repository.SaveAsync(tenantId, updated, cancellationToken);
 
         var evt = new AlertDecided(
             EventId: Guid.NewGuid(),
-            AlertId: persisted.Id,
-            TenantId: persisted.TenantId,
+            AlertId: updated.Id,
+            TenantId: updated.TenantId,
             Decision: outcome,
             Timestamp: DateTimeOffset.UtcNow);
 
-        await TryPublishAsync(evt, cancellationToken);
-        return persisted;
-    }
-
-    private async Task TryPublishAsync(AlertEvent evt, CancellationToken cancellationToken)
-    {
-        try
-        {
-            await eventPublisher.PublishAsync(evt, cancellationToken);
-        }
-        catch
-        {
-            // v1 policy: state is already persisted; publish failure does not fail request
-        }
+        return await unitOfWork.SaveAsync(tenantId, updated, [evt], cancellationToken);
     }
 }
