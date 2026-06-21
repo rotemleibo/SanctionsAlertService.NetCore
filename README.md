@@ -306,7 +306,7 @@ Even with in-memory storage, the service models reliable event publication separ
 ## What I Would Add for Production
 
 - Persistent database with tenant-aware indexes and constraints
-- Authentication and authorization, with tenant resolution from trusted identity claims
+- Authentication and authorization, with tenant resolution from trusted identity claims (JWT)
 - Real message broker integration
 - Idempotency keys for upstream create requests
 - Distributed tracing, metrics, and health checks
