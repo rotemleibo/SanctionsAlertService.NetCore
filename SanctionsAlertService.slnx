@@ -1,0 +1,14 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/SanctionsAlertService.Api/SanctionsAlertService.Api.csproj" />
+    <Project Path="src/SanctionsAlertService.Application/SanctionsAlertService.Application.csproj" />
+    <Project Path="src/SanctionsAlertService.Domain/SanctionsAlertService.Domain.csproj" />
+    <Project Path="src/SanctionsAlertService.Infrastructure/SanctionsAlertService.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/SanctionsAlertService.Api.Tests/SanctionsAlertService.Api.Tests.csproj" />
+    <Project Path="tests/SanctionsAlertService.Application.Tests/SanctionsAlertService.Application.Tests.csproj" />
+    <Project Path="tests/SanctionsAlertService.Domain.Tests/SanctionsAlertService.Domain.Tests.csproj" />
+    <Project Path="tests/SanctionsAlertService.Infrastructure.Tests/SanctionsAlertService.Infrastructure.Tests.csproj" />
+  </Folder>
+</Solution>
