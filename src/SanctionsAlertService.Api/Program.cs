@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using SanctionsAlertService.Api.Errors;
 using SanctionsAlertService.Api.Tenant;
 using SanctionsAlertService.Application.Events;
@@ -11,7 +12,11 @@ using SanctionsAlertService.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -44,3 +49,5 @@ app.UseHttpsRedirection();
 app.MapControllers();
 
 app.Run();
+
+public partial class Program;
